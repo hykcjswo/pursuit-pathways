@@ -1,0 +1,951 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Pathways for Pursuit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: long-form brief with a sticky progress nav; the route explorer is a two-axis map with three zones (Independent / Partner / New college). Styled after pursuit.org: near-black and white, one electric purple, pink and yellow accents, tight geometric headlines, mono captions. */
+:root{
+  --paper:#F2F2F2; --surface:#FFFFFF; --ink:#121212; --muted:#5C5C5C; --line:#D9D9D9;
+  --accent:#4343EA; --accent-wash:#E8E8FC;
+  --pink:#FFD3C2; --yellow:#ECFF00; --purple-soft:#7474EF;
+  --z-ind:#121212; --z-ind-wash:#E6E6E6;
+  --z-par:#4343EA; --z-par-wash:#E8E8FC;
+  --z-new:#C2255C; --z-new-wash:#FFE3EC;
+  --good:#1E7A3C; --warn:#A86400; --bad:#B3261E;
+  --good-wash:#E2F2E6; --warn-wash:#FBEFD9; --bad-wash:#F8E1DF;
+  --display:'Outfit','Galano Grotesque',Helvetica,Arial,sans-serif;
+  --body:'Inter','Graphik',Helvetica,Arial,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;
+  --r:4px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121212; --surface:#1C1C1C; --ink:#F2F2F2; --muted:#AAAAAA; --line:#333333;
+  --accent:#8F8FF7; --accent-wash:#24244D;
+  --z-ind:#F2F2F2; --z-ind-wash:#2A2A2A;
+  --z-par:#8F8FF7; --z-par-wash:#24244D;
+  --z-new:#FF7FA8; --z-new-wash:#43192B;
+  --good:#6BCB8A; --warn:#F0B746; --bad:#F28B82;
+  --good-wash:#173523; --warn-wash:#3A2D12; --bad-wash:#3D1C1A;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#121212; --surface:#1C1C1C; --ink:#F2F2F2; --muted:#AAAAAA; --line:#333333;
+  --accent:#8F8FF7; --accent-wash:#24244D;
+  --z-ind:#F2F2F2; --z-ind-wash:#2A2A2A;
+  --z-par:#8F8FF7; --z-par-wash:#24244D;
+  --z-new:#FF7FA8; --z-new-wash:#43192B;
+  --good:#6BCB8A; --warn:#F0B746; --bad:#F28B82;
+  --good-wash:#173523; --warn-wash:#3A2D12; --bad-wash:#3D1C1A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:#121212}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--display);letter-spacing:-.02em;line-height:1.08;margin:0;text-wrap:balance}
+h2{font-size:clamp(28px,4vw,40px);font-weight:600;letter-spacing:-.01em}
+h3{font-size:21px;font-weight:600}
+h4{font-size:16px;font-weight:700}
+p{margin:0}
+.prose{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+.tnum{font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+
+/* nav */
+nav.lines{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:#121212;color:#fff;border-bottom:1px solid #2A2A2A}
+nav.lines .wrap{display:flex;align-items:center;gap:10px;padding-block:10px;overflow-x:auto;scrollbar-width:none}
+nav.lines .wrap::-webkit-scrollbar{display:none}
+.brand{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.02em;white-space:nowrap;margin-right:8px;color:#fff}
+.stops{display:flex;align-items:center;gap:0;flex:1}
+.stops a{display:flex;align-items:center;gap:6px;text-decoration:none;color:#AAAAAA;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;padding:4px 8px;position:relative}
+.stops a::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid var(--purple-soft);background:#121212;flex:none}
+.stops a:hover,.stops a.on{color:#fff}
+.stops a.on::before{background:var(--purple-soft)}
+.stops .seg{flex:1;min-width:10px;height:2px;background:#333}
+
+section{padding-block:72px 24px}
+.sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.sec-head .num{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.01em;color:var(--ink);display:flex;align-items:baseline;gap:12px}
+.sec-head .num b{font-weight:600;color:var(--accent)}
+
+/* hero */
+.hero{padding-block:72px 48px;background:#121212;color:#fff}
+.hero .eyebrow,.hero .meta-row span,.hero cite{color:#AAAAAA}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:40px;align-items:center}
+.hero h1{font-size:clamp(40px,6vw,76px);font-weight:600;letter-spacing:-.035em;line-height:.95}
+.hero h1 em{font-style:normal;color:var(--pink);display:block;margin-top:18px;font-size:.5em;line-height:1.1;letter-spacing:-.025em}
+.hero .lede{font-size:18px;color:#E6E6E6;max-width:52ch;margin-top:18px}
+.quote{border-left:3px solid var(--yellow);padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:10px}
+.quote blockquote{margin:0;font-family:var(--display);font-size:24px;font-weight:500;line-height:1.3;letter-spacing:-.015em}
+.quote cite{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:26px}
+.meta-row span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* needs picker */
+.needs-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.needs-tabs button{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px}
+.needs-tabs button b{font-family:var(--display);font-size:18px;font-weight:700}
+.needs-tabs button span{font-size:14px;color:var(--muted);line-height:1.4}
+.needs-tabs button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-wash)}
+.need-panel{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.need-panel > div{min-width:0;display:flex;flex-direction:column;gap:8px}
+.need-panel p{font-size:15.5px}
+.verdict{grid-column:1/-1;border-top:1px solid var(--line);padding-top:16px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.pill.good{background:var(--good-wash);color:var(--good)}
+.pill.warn{background:var(--warn-wash);color:var(--warn)}
+.pill.bad{background:var(--bad-wash);color:var(--bad)}
+
+/* landscape */
+.gates{position:relative;list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.gates::before{content:"";position:absolute;left:-1px;top:-3px;width:calc(80% - 11px);height:6px;background:var(--accent);z-index:1}
+.gates::after{content:"";position:absolute;left:calc(80% - 12px);top:-11px;border-left:16px solid var(--accent);border-top:11px solid transparent;border-bottom:11px solid transparent;z-index:1}
+.gate{position:relative;padding:26px 16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0;border-right:1px solid var(--line)}
+.gate:last-child{border-right:0}
+.gate:first-child{border-radius:var(--r) 0 0 var(--r)}
+.gate-out{background:var(--paper);border-radius:0 var(--r) var(--r) 0}
+.gate-out::before{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:repeating-linear-gradient(90deg,var(--muted) 0 6px,transparent 6px 12px)}
+.g-num{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gate p{font-size:14.5px;line-height:1.5;flex:1}
+.g-keeper{font-family:var(--mono);font-size:11.5px;color:var(--accent);border-top:1px dashed var(--line);padding-top:8px;min-height:3.4em}
+.trends{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:20px}
+.trend:nth-child(-n+3){grid-column:span 2}
+.trend:nth-child(n+4){grid-column:span 3}
+.trend{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.trend .stat{font-family:var(--display);font-weight:600;font-size:40px;line-height:1;color:var(--accent)}
+.trend .stat small{font-size:15px;font-weight:600;color:var(--muted);margin-left:4px}
+.trend p{font-size:15px}
+.trend .implication{font-size:14.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;margin-top:auto}
+.aside{margin-top:22px;font-size:14.5px;line-height:1.55;color:var(--muted);border-left:3px solid var(--line);padding:2px 0 2px 14px}
+.aside b{color:var(--ink)}
+.trend-h{font-size:26px;color:var(--accent);line-height:1.1}
+.myth{margin-top:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.myth > div{padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.myth > div:first-child{background:var(--warn-wash)}
+.myth > div:last-child{background:var(--surface)}
+
+/* pursuit */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.ledger{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ledger h3{margin-bottom:10px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:9px 0;border-top:1px solid var(--line);align-items:baseline}
+.crow{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid var(--line)}
+.crow b{font-weight:600;font-size:15px;line-height:1.45}
+.crow span{font-size:14.5px;color:var(--muted);line-height:1.5}
+.assets .row{flex:1;align-items:center}
+.row .k{font-size:15px}
+.row .v{font-family:var(--mono);font-size:13px;color:var(--muted);text-align:right}
+.tracks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.track{background:var(--accent-wash);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.track b{font-family:var(--display);font-size:16px}
+.track span{font-size:14px;color:var(--muted)}
+.note{font-size:14px;color:var(--muted)}
+
+/* hypothesis + calculator */
+.hyp{background:var(--ink);color:var(--paper);border-radius:var(--r);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px 44px;align-items:start}
+.hyp .hyp-top{grid-column:1/-1}
+.hyp-conds{display:flex;flex-direction:column;gap:10px}
+.hyp .eyebrow{color:color-mix(in srgb,var(--paper) 70%,transparent)}
+.hyp p.claim{align-self:center;font-family:var(--display);font-size:clamp(22px,3vw,32px);font-weight:650;line-height:1.2}
+.hyp ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.calc{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.calc .inputs{display:flex;flex-direction:column;gap:16px;min-width:0}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{display:flex;justify-content:space-between;gap:8px;font-size:14.5px}
+.field label output{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.result{display:flex;flex-direction:column;gap:14px;min-width:0}
+.result .note{margin-top:auto}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:120px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:13.5px}
+.bar .track-b{height:14px;background:var(--paper);border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;border-radius:3px;transition:width .25s}
+.bar .val{font-family:var(--mono);font-size:12.5px;text-align:right}
+.big{font-family:var(--display);font-weight:600;font-size:44px;line-height:1}
+.big.neg{color:var(--bad)} .big.pos{color:var(--good)}
+
+/* explorer */
+.zone-key{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;align-items:center}
+.zk{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.zk i{width:12px;height:12px;border-radius:50%;display:block}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-left:auto}
+.toggle button{background:var(--surface);border:0;padding:6px 14px;font-family:var(--mono);font-size:12px}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.explorer{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.mapbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;overflow-x:auto}
+.mapbox svg{display:block;width:100%;min-width:440px;height:auto}
+.stn{cursor:pointer}
+.stn:focus{outline:none}
+.stn:focus-visible circle.ring{stroke:var(--accent);stroke-width:3}
+.stn text{font-family:var(--mono);font-size:12.5px;fill:var(--ink)}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.detail .zone-tag{align-self:flex-start}
+.scores{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.score{border-radius:var(--r);padding:8px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.score b{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;opacity:.85}
+.score span{font-size:13px;line-height:1.3}
+.score.good{background:var(--good-wash);color:var(--good)}
+.score.warn{background:var(--warn-wash);color:var(--warn)}
+.score.bad{background:var(--bad-wash);color:var(--bad)}
+.kv{display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 12px;font-size:14.5px}
+.kv dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.kv dd{margin:0}
+details.drawer{border-top:1px solid var(--line);padding-top:10px}
+details.drawer summary{font-family:var(--mono);font-size:12px;cursor:pointer;color:var(--accent)}
+details.drawer ul{margin:10px 0 0;padding-left:18px;font-size:14.5px;display:flex;flex-direction:column;gap:6px}
+.left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.route-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.zone-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.zone-col h4{display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:3px solid var(--zc)}
+.rbtn{text-align:left;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--zc);border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.rbtn b{font-family:var(--display);font-size:14.5px;line-height:1.2}
+.rbtn span{font-size:12.5px;color:var(--muted);line-height:1.3}
+.rbtn[aria-pressed="true"]{background:var(--zw)}
+.z-ind{--zc:var(--z-ind);--zw:var(--z-ind-wash)}
+.z-par{--zc:var(--z-par);--zw:var(--z-par-wash)}
+.z-new{--zc:var(--z-new);--zw:var(--z-new-wash)}
+.zone-tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--zw);color:var(--zc)}
+
+/* chain */
+.chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-bottom:22px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.chain div{padding:12px 14px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px;min-width:0}
+.chain div:last-child{border-right:0}
+.chain b{font-family:var(--display);font-size:15px}
+.chain span{font-size:13px;color:var(--muted);line-height:1.35}
+
+/* timeline */
+.timeline{position:relative;display:flex;flex-direction:column;gap:0;margin-top:8px}
+.tl{display:grid;grid-template-columns:120px 28px minmax(0,1fr);gap:0 14px}
+.tl .when{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:18px;text-align:right}
+.tl .rail{position:relative}
+.tl .rail::before{content:"";position:absolute;left:12px;top:0;bottom:0;width:4px;background:var(--zc)}
+.tl .rail::after{content:"";position:absolute;left:5px;top:18px;width:18px;height:18px;border-radius:50%;background:var(--surface);border:4px solid var(--zc)}
+.tl .body{padding:14px 0 22px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tl .body ul{margin:0;padding-left:18px;font-size:15px;display:flex;flex-direction:column;gap:4px}
+.trigger{font-size:14.5px;background:var(--zw);border-radius:var(--r);padding:8px 12px}
+.trigger b{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--zc);margin-right:6px}
+
+/* plan */
+.plan-note{font-size:14.5px;color:var(--muted);margin-bottom:6px}
+.rows{display:flex;flex-direction:column;border-bottom:1px solid var(--line)}
+.rw{display:grid;grid-template-columns:210px minmax(0,1fr);gap:4px 22px;padding:14px 0;border-top:1px solid var(--line)}
+.rw h4{font-size:16px;padding-top:2px}
+.rw p{font-size:15px;line-height:1.55}
+.rw .step{font-family:var(--mono);font-size:12px;color:var(--zc);margin-top:6px;line-height:1.5}
+.conds{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.conds li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;font-size:15px;line-height:1.55}
+.conds li::before{content:"";width:16px;height:16px;margin-top:4px;border:2px solid var(--zc);border-radius:3px;background:var(--surface)}
+.conds b{font-family:var(--display);font-weight:700}
+.tl .body>h3{padding-top:2px}
+.tl .body>.lead{font-size:15.5px}
+.hyp-tracks{display:flex;flex-direction:column;gap:12px;font-size:15.5px}
+.hyp-tracks b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+.subhead{margin:36px 0 14px}
+
+/* tradeoffs */
+.vs-list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px 22px}
+.vs{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:6px 28px;padding:16px 0;border-top:1px solid var(--line);align-items:baseline}
+.vs:first-child{border-top:0}
+.vs h3{font-size:19px}
+.vs h3 i{font-style:normal;font-family:var(--mono);font-size:12px;font-weight:400;color:var(--accent);margin:0 6px;letter-spacing:.04em}
+.vs p{font-size:15.5px;line-height:1.55}
+
+/* decisions */
+.decs{list-style:none;margin:0;padding:0;counter-reset:d;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 36px}
+.decs li{counter-increment:d;display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 10px;align-items:start}
+.decs li::before{content:counter(d);font-family:var(--display);font-weight:600;font-size:40px;line-height:1;color:var(--accent)}
+.decs h3{font-size:18px;line-height:1.2}
+.decs p{font-size:14.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+.info{margin-top:30px}
+.info table{min-width:520px}
+.info td:last-child,.info th:last-child{text-align:right;white-space:nowrap}
+.info tr.grp td{text-align:left;white-space:normal;background:var(--paper);font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding-block:8px}
+.chip{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent-wash);color:var(--accent);font-family:var(--mono);font-size:12.5px;font-weight:600;margin-left:4px}
+
+/* questions */
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.q h3{font-size:19px}
+.q p{font-size:15px}
+.q .why{font-size:14px;color:var(--muted);margin-top:auto}
+
+/* field guide */
+.guide details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px}
+.guide summary{padding:16px 18px;cursor:pointer;font-family:var(--display);font-size:19px;font-weight:700;display:flex;justify-content:space-between;gap:12px}
+.guide summary::after{content:"+";font-family:var(--mono);color:var(--accent)}
+.guide details[open] summary::after{content:"–"}
+.guide .inner{padding:0 18px 18px;display:flex;flex-direction:column;gap:14px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-top:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;border-top:0}
+td b{font-family:var(--display)}
+.checklist{margin:0;padding-left:20px;font-size:15px;display:flex;flex-direction:column;gap:6px}
+.src{font-size:14px;columns:2;column-gap:28px;margin:0;padding-left:18px}
+.src li{break-inside:avoid;margin-bottom:6px}
+footer{padding-block:40px 60px;color:var(--muted);font-size:14px}
+
+@media (max-width:860px){
+  .hero-grid,.two,.calc,.explorer,.myth,.hyp{grid-template-columns:minmax(0,1fr)}
+  .need-panel{grid-template-columns:minmax(0,1fr)}
+  .needs-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .route-list{grid-template-columns:minmax(0,1fr)}
+  .chain{grid-template-columns:minmax(0,1fr)}
+  .chain div{border-right:0;border-bottom:1px solid var(--line)}
+  .tracks{grid-template-columns:minmax(0,1fr)}
+  .rw,.vs,.decs{grid-template-columns:minmax(0,1fr)}
+  .src{columns:1}
+  .gates{grid-template-columns:minmax(0,1fr)}
+  .trends{grid-template-columns:minmax(0,1fr)}
+  .trend:nth-child(n){grid-column:auto}
+  .gate{border-right:0;border-bottom:1px solid var(--line)}
+  .gates{margin-top:0}
+  .gates::before,.gates::after{display:none}
+  .gate:nth-child(-n+4){border-left:6px solid var(--accent)}
+  .gate:nth-child(4)::after{content:"";position:absolute;left:-6px;bottom:-12px;margin-left:-8px;border-top:14px solid var(--accent);border-left:11px solid transparent;border-right:11px solid transparent;z-index:1}
+  .gate:first-child,.gate-out{border-radius:0}
+  .gate:last-child{border-bottom:0}
+}
+@media (max-width:520px){
+  .tl{grid-template-columns:28px minmax(0,1fr)}
+  .tl .when{grid-column:2;text-align:left;padding-top:14px}
+  .tl .rail{grid-row:1/span 2;grid-column:1}
+  .tl .body{grid-column:2}
+  .scores{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bar{grid-template-columns:90px minmax(0,1fr) 70px}
+  .toggle{margin-left:0}
+}
+</style>
+
+<nav class="lines" aria-label="Sections">
+  <div class="wrap">
+    <span class="brand">Pathways for Pursuit</span>
+    <div class="stops" id="stops">
+      <a href="#question">Question</a><span class="seg"></span>
+      <a href="#needs">Needs</a><span class="seg"></span>
+      <a href="#landscape">Landscape</a><span class="seg"></span>
+      <a href="#pursuit">Pursuit</a><span class="seg"></span>
+      <a href="#hypothesis">Proposed plan</a><span class="seg"></span>
+      <a href="#routes">Pathways</a><span class="seg"></span>
+      <a href="#tradeoffs">Tradeoffs</a><span class="seg"></span>
+      <a href="#questions">Decisions</a><span class="seg"></span>
+      <a href="#guide">Appendix</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="question">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Working draft, Nov 2026, prepared for Pursuit leadership</p>
+      <h1 style="margin-top:14px">Accreditation is one path of many.<br><em>What can Pursuit begin in the near term, and what should it prepare for over the long term?</em></h1>
+      <p class="lede">Workforce Pell and new rules for accreditors could open federal funding to programs such as Pursuit's, though only through accredited institutions. This brief offers a dual approach: funded partnerships that Pursuit can begin in the near term, and low-cost preparation that keeps an accredited Pursuit college available as a long-term option. Outcomes evidence connects the two.</p>
+    </div>
+    <div class="quote">
+      <blockquote>“How do groups like Pursuit achieve some form of accreditation or work with accrediting entities?”</blockquote>
+      <cite>Nick Simmons, Pursuit CEO, Oct 23, 2026</cite>
+    </div>
+  </div>
+  <div class="wrap meta-row">
+    <span>Drafted for discussion by Elle Kang</span>
+  </div>
+</header>
+
+<main>
+<!-- NEEDS -->
+<section id="needs">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>01</b>What accreditation delivers</span>
+      <h2>Why might Pursuit consider accreditation?</h2>
+    </div>
+    <div class="needs-tabs" role="group" aria-label="Choose a need" id="needTabs"></div>
+    <div class="need-panel" id="needPanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- LANDSCAPE -->
+<section id="landscape">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>02</b>The landscape</span>
+      <h2>How a new college gets approved</h2>
+      <p class="prose" style="color:var(--muted)">A new college passes through four steps in order, each with a different gatekeeper. Federal aid can begin at candidacy, but only after the Department of Education approves participation. Credit transfer is a separate decision made by receiving universities.</p>
+    </div>
+    <ol class="gates">
+      <li class="gate"><span class="g-num">Step 1</span><h4>State authorization</h4><p>Requires a New York Board of Regents charter, and each degree program must be registered. Existing colleges in the region are canvassed for objections.</p><span class="g-keeper">Gatekeeper: NYSED</span></li>
+      <li class="gate"><span class="g-num">Step 2</span><h4>Candidacy</h4><p>An accreditor reviews eligibility, including enrolled students, a governing board and audited finances. Nonprofits in candidacy can become eligible for federal aid.</p><span class="g-keeper">Gatekeeper: Accreditor</span></li>
+      <li class="gate"><span class="g-num">Step 3</span><h4>Accreditation</h4><p>Typically granted four to five years after candidacy. Recent precedents took five to ten years from founding.</p><span class="g-keeper">Gatekeeper: Accreditor</span></li>
+      <li class="gate"><span class="g-num">Step 4</span><h4>Federal aid</h4><p>Requires a participation agreement with the Department of Education. Workforce Pell programs also need approval from the governor and the Department.</p><span class="g-keeper">Gatekeeper: Department of Education</span></li>
+      <li class="gate gate-out"><span class="g-num">If applicable</span><h4>Transfer</h4><p>Each receiving university decides which credits it accepts. This sits outside the accreditor's control.</p><span class="g-keeper">Gatekeeper: Receiving universities</span></li>
+    </ol>
+
+
+    <h3 style="margin-top:36px">Recent developments relevant to the decision</h3>
+    <div class="trends">
+      <article class="trend">
+        <span class="eyebrow">Money follows earnings</span>
+        <div class="stat tnum">70 / 70<small>completion / placement</small></div>
+        <p>Workforce Pell covers programs of 150–599 hours that run 8 to under 15 weeks. Programs qualify only if 70% of students complete, 70% find work, and the program passes a value-added earnings test. Awards are prorated by program length.</p>
+        <p class="implication">Outcomes data becomes the basis for funding. Pursuit's 7-month program is too long for Workforce Pell and fits regular Pell instead.</p>
+      </article>
+      <article class="trend">
+        <span class="eyebrow">New accreditors can enter</span>
+        <div class="stat tnum">2<small>new accreditors seeking federal recognition</small></div>
+        <p>The Department of Education reports that only one institutional accreditor has launched in the past 40 years. Its new accreditation rule from the Accreditation, Innovation, and Modernization (AIM) rulemaking, finalized Oct 30 and effective July 1, 2027, lowers barriers for new accreditors. Two new accreditors are seeking federal recognition: PSC, an outcomes-based accreditor, and CPHE, formed by public university systems in the South.</p>
+        <p class="implication">The change widens access to federal aid. Transfer and employer recognition remain with receiving universities and employers.</p>
+      </article>
+      <article class="trend">
+        <span class="eyebrow">Peers are becoming colleges</span>
+        <h4 class="trend-h">Acquiring over building, so far</h4>
+        <p>Organizations such as Campus, Outsmart, Frontier and Stepful have acquired small accredited schools to gain their state licenses and accreditation. Merit America is an uncommon example of a builder: Meritus College, founded in 2025, is registered in Utah to grant degrees and is not accredited by a federally recognized accreditor.</p>
+        <p class="implication">An acquisition brings a license and the seller's accreditor. Each new program still needs approval.</p>
+      </article>
+      <article class="trend">
+        <span class="eyebrow">Entry-level jobs are shrinking</span>
+        <div class="stat tnum">−13%<small>ages 22–25, most AI-exposed jobs</small></div>
+        <p>Stanford payroll research finds early-career workers in the most AI-exposed occupations lost 13% relative employment since late 2022, while older workers in the same jobs held steady. The authors' explanation is that AI substitutes for codified, book-learned knowledge more than for tacit knowledge built on the job.</p>
+        <p class="implication">If that holds, supervised work gains value relative to classroom credentials. The New York Fed cautions the slowdown can't be pinned on AI alone.</p>
+      </article>
+      <article class="trend">
+        <span class="eyebrow">Earn-and-learn gets funded</span>
+        <div class="stat tnum">$300M+<small>federal apprenticeship funding, 2026</small></div>
+        <p>The Labor Department announced over $300M in apprenticeship funding this year and awarded Pursuit $4.7M in October. North Carolina lets community colleges award up to 16 credit hours for work-based learning in apprenticeship-aligned associate (AAS) programs.</p>
+        <p class="implication">Employers cover apprentice wages, and federal grants fund intermediaries like Pursuit. Neither requires Pursuit's own accreditation.</p>
+      </article>
+    </div>
+
+    <p class="aside"><b>On transfer.</b> Each receiving school decides which credits it accepts, whatever the accreditor. The Government Accountability Office (GAO) found transfer students lost 43% of their credits on average, and 94% when moving from for-profit to public schools. The Accreditation, Innovation, and Modernization (AIM) rulemaking committee agreed colleges should disclose what will transfer, explain denials and offer an appeal.</p>
+  </div>
+</section>
+
+<!-- PURSUIT -->
+<section id="pursuit">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>03</b>Where Pursuit is today</span>
+      <h2>Current position: assets and constraints</h2>
+    </div>
+    <div class="two">
+      <div class="ledger assets">
+        <h3>Assets</h3>
+        <div class="row"><span class="k">AI-Native program, built from scratch on Pursuit's own platform</span><span class="v">7 months</span></div>
+        <div class="row"><span class="k">AI Jobs Institute, Long Island City (public)</span><span class="v">$10M</span></div>
+        <div class="row"><span class="k">DOL Rapid Reskill grant, Oct 2026</span><span class="v">$4.7M</span></div>
+        <div class="row"><span class="k">Google.org regional AI training grant</span><span class="v">$2.5M</span></div>
+        <div class="row"><span class="k">LaGuardia CC: AI Fundamentals on campus</span><span class="v">42 hrs, free</span></div>
+        <div class="row"><span class="k">NYC's first certified adult software-development apprenticeship</span><span class="v">Registered</span></div>
+        <div class="row"><span class="k">Lead for the governor's AI Prep for Jobs</span><span class="v">NYC, Buffalo, Syracuse</span></div>
+      </div>
+      <div class="ledger">
+        <h3>Constraints and implications</h3>
+        <div class="crow"><b>In-person, tri-state delivery is part of the model.</b><span>Options built on online delivery or a distance-only accreditor are a poor fit.</span></div>
+        <div class="crow"><b>The curriculum changes as tools change, while New York registers programs one at a time.</b><span>Any credit arrangement needs to survive frequent updates, for example by tying credit to skills rather than to course outlines.</span></div>
+        <div class="crow"><b>The 7-month program is too long for Workforce Pell, and the 42-hour course is too short.</b><span>Workforce Pell requires a new program of 8 to 14 weeks. The current program fits regular Pell.</span></div>
+        <div class="crow"><b>Outcomes evidence for the AI-Native model is still early.</b><span>Accreditors and earnings tests will want a longer record before relying on the AI-Native results.</span></div>
+        <div class="crow"><b>Revenue comes mostly from government and philanthropy.</b><span>Revenue from employers and union training funds could diversify funding more than federal aid, which is also government money.</span></div>
+        <p class="note" style="margin-top:12px">The earlier fellowship's $18K → $85K+ income story is strong. An accreditor or earnings test will judge the AI-Native model on its own record.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:20px">Graduates are placed in three areas: AI engineering teams, business operations roles that need AI skills, and AI enablement engineering.</p>
+  </div>
+</section>
+
+<!-- HYPOTHESIS -->
+<section id="hypothesis">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>04</b>Proposed plan</span>
+      <h2>Revenue and credentials, connected by outcomes evidence</h2>
+    </div>
+    <div class="hyp">
+      <span class="eyebrow hyp-top">Working hypothesis</span>
+      <p class="claim">Funded partnerships can grow enrollment and revenue in the near term. Low-cost preparation in parallel keeps an accredited Pursuit college available as a long-term option.</p>
+      <div class="hyp-conds">
+        <span class="eyebrow">Suggested near-term priorities</span>
+        <div class="hyp-tracks">
+          <div><b>Revenue</b>Decide who pays for new seats. Consider union funds, public programs and employers who already pay for training.</div>
+          <div><b>Credentials</b>CUNY or SUNY in the near term, and Pursuit's own over the long term.</div>
+          <div><b>Outcomes evidence</b>Prioritize the earnings record that payers, colleges and accreditors review.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Illustrative sequence</h3>
+    <div class="timeline">
+
+      <div class="tl z-ind">
+        <span class="when">Months 0–6</span><span class="rail"></span>
+        <div class="body">
+          <h3>Begin funded partnerships</h3>
+          <p class="lead">Each can begin without accreditation.</p>
+          <div class="rows">
+            <div class="rw"><h4>Upskilling for current workers</h4><div><p>Union funds, public programs and employers already pay to train people in work. Union training funds pay members' tuition from collectively bargained money. Local workforce boards can spend up to 20% of federal adult and dislocated worker funds on incumbent worker training. Employers pay from learning budgets, with up to $5,250 per employee tax-free each year. Pursuit's pilot with Goldman Sachs is a starting point.</p><p class="step">Within 3 months: price a standard module and identify who controls each fund.</p></div></div>
+            <div class="rw"><h4>College credit for the AI-Native program</h4><div><p>CUNY faculty can approve credit for the program under Policy 1.21. Graduates could leave with CUNY credit toward a degree, which addresses the degree requirement some face later in their careers. The faculty review also maps Pursuit's skills to credit, and an apprenticeship, a Workforce Pell module or a later accreditation review could reuse that mapping. Pursuit has been a registered apprenticeship sponsor since 2023. In an expanded model, Pursuit can deliver the related instruction, an employer pays the apprentice, and a CUNY or SUNY college awards credit for the instruction.</p><p class="step">Within 6 months: submit the curriculum for faculty review and explore apprenticeship terms with one employer.</p></div></div>
+            <div class="rw"><h4>Workforce Pell module with LaGuardia</h4><div><p>An 8 to 14 week program offered by LaGuardia, with Pursuit delivering up to 25% under contract (under 50% with accreditor approval), could test federal aid without Pursuit owning a college.</p><p class="step">Within 6 months: confirm LaGuardia's interest and the state approval timeline.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl z-par">
+        <span class="when">Months 0–12, in parallel</span><span class="rail"></span>
+        <div class="body">
+          <h3>Invest in the foundations for accreditation</h3>
+          <p class="lead">Low-cost work that also strengthens the near-term partnerships.</p>
+          <div class="rows">
+            <div class="rw"><h4>Seat-level economics</h4><div><p>What one learner and one placement cost Pursuit in each program, against what each payer provides per seat. The comparison shows which funding sources cover their costs.</p></div></div>
+            <div class="rw"><h4>Outcomes evidence</h4><div><p>Measure employment and earnings for every entrant, including those who leave early, with independent verification. Prepare a study plan for the AI-Native model so that a randomized or comparable evaluation can start once the program is stable.</p></div></div>
+            <div class="rw"><h4>Credential groundwork</h4><div><p>Define credit by demonstrated skills, such as building and deploying an AI application, so that curriculum updates need no new approval. Scope the Board of Regents charter, a separately chartered entity, and the standards of outcomes-based accreditors such as PSC.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl z-new">
+        <span class="when">From month 12, as conditions are met</span><span class="rail"></span>
+        <div class="body">
+          <h3>Decide whether to pursue a Pursuit college</h3>
+          <p class="lead">The case for a college is strong when these conditions hold.</p>
+          <ul class="conds">
+            <li><span><b>Evidence.</b> A randomized trial or comparable study has been commissioned and quantifies the earnings effect, and placement has held at target across several cohorts.</span></li>
+            <li><span><b>Demand and funding.</b> Union funds, public programs and employers pay for enough seats that tuition has identified payers, and funders have committed to the setup years.</span></li>
+            <li><span><b>Partner limits.</b> College approval timelines or the federal limit on outside delivery constrain growth, and Pursuit seeks a credential in its own name.</span></li>
+            <li><span><b>Accreditor fit.</b> An outcomes-based accreditor is federally recognized, has accredited a new institution, and accommodates a curriculum that changes frequently.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Scale and federal aid</h3>
+    <div class="calc">
+      <div class="inputs">
+        <div>
+          <h3>Illustrative: does federal aid cover its running costs?</h3>
+          <p class="note" style="margin-top:6px">Placeholder inputs. Gross aid = learners × share eligible × average award. Net aid = gross aid minus yearly aid-related expenditure (e.g., aid office, registrar, audits, accreditor dues).</p>
+        </div>
+        <div class="field"><label for="learners">Learners per year <output id="o-learners"></output></label><input id="learners" type="range" min="60" max="2400" step="20" value="240"></div>
+        <div class="field"><label for="eligible">Share eligible for Pell <output id="o-eligible"></output></label><input id="eligible" type="range" min="30" max="95" step="5" value="70"></div>
+        <div class="field"><label for="award">Average aid per eligible learner <output id="o-award"></output></label><input id="award" type="range" min="2000" max="7395" step="100" value="6000"></div>
+        <div class="field"><label for="cost">Annual cost of the aid office, registrar, audits and accreditation <output id="o-cost"></output></label><input id="cost" type="range" min="300000" max="2000000" step="50000" value="750000"></div>
+      </div>
+      <div class="result" aria-live="polite">
+        <span class="eyebrow">Net federal aid per year</span>
+        <div class="big tnum" id="net"></div>
+        <div class="bars">
+          <div class="bar"><span>Gross aid</span><div class="track-b"><div class="fill" id="b-gross" style="background:var(--good)"></div></div><span class="val tnum" id="v-gross"></span></div>
+          <div class="bar"><span>Running cost</span><div class="track-b"><div class="fill" id="b-cost" style="background:var(--bad)"></div></div><span class="val tnum" id="v-cost"></span></div>
+          <div class="bar"><span>AI Jobs Institute</span><div class="track-b"><div class="fill" id="b-ref" style="background:var(--muted)"></div></div><span class="val tnum">$10.0M</span></div>
+        </div>
+        <p class="note">Additional considerations: average award likely lower for a 7-month program; setup costs before aid flows excluded; the maximum Pell award is $7,395 for 2026–27; aid for students who withdraw is returned; the AI Jobs Institute $10M bar is shown for scale only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTES -->
+<section id="routes">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>05</b>Pathways</span>
+      <h2>Options by category</h2>
+      <p class="prose" style="color:var(--muted)">The horizontal axis shows control over the model, and the vertical axis shows how directly federal aid reaches Pursuit. Color marks the category and bubble size the relative cost. The dashed line marks the illustrative sequence from section 04. Positions are illustrative.</p>
+    </div>
+
+        <div class="zone-key">
+      <span class="zk"><i style="background:var(--z-ind)"></i>Independent</span>
+      <span class="zk"><i style="background:var(--z-par)"></i>Partner</span>
+      <span class="zk"><i style="background:var(--z-new)"></i>New college</span>
+      <span class="zk zk-size">Cost <svg width="64" height="22" viewBox="0 0 64 22" aria-hidden="true"><circle cx="6" cy="11" r="4.5" fill="none" stroke="var(--muted)" stroke-width="1.5"/><circle cx="22" cy="11" r="7" fill="none" stroke="var(--muted)" stroke-width="1.5"/><circle cx="46" cy="11" r="10" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg> low → high</span>
+      <span class="zk"><svg width="34" height="10" viewBox="0 0 34 10" aria-hidden="true"><line x1="1" y1="5" x2="26" y2="5" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/><path d="M26 1L33 5L26 9z" fill="var(--ink)"/></svg>Illustrative sequence</span>
+      
+    </div>
+
+    <div class="explorer">
+      <div class="left">
+        <div class="mapbox"><svg id="map" viewBox="0 0 640 440" role="img" aria-label="Map of options plotted by control over the model and direct federal aid, with a dashed line marking the illustrative sequence"></svg></div>
+        <div class="route-list" id="routeList"></div>
+      </div>
+      <div class="detail" id="detail" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRADEOFFS -->
+<section id="tradeoffs">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>06</b>Tradeoffs</span>
+      <h2>Tradeoffs between options</h2>
+    </div>
+    <div class="vs-list">
+      <div class="vs"><h3>Margin <i>vs.</i> mission</h3><p>Upskilling pays more per seat but serves people who already hold jobs, and it competes with the core program for staff time.</p></div>
+      <div class="vs"><h3>Funded seats <i>vs.</i> discounted seats</h3><p>A member discount is quick to arrange, but learners still pay and few enroll. A seat paid in full by a fund or employer fills, but the commitment takes longer to negotiate.</p></div>
+      <div class="vs"><h3>Learner value <i>vs.</i> Pursuit revenue</h3><p>An apprenticeship with college credit gives learners the most: a wage, a state credential and credit. It pays Pursuit the least, because wages, tax credits and state instruction funds go to employers and colleges. Upskilling pays Pursuit directly and carries no credit.</p></div>
+      <div class="vs"><h3>Fast growth <i>vs.</i> exposure</h3><p>Union and public channels can fill many seats quickly, but they tie revenue to one fund or one administration and draw regulatory scrutiny. Eastern Gateway Community College grew rapidly through a union free-college program, lost access to Pell funds in 2022 and closed in 2024.</p></div>
+      <div class="vs"><h3>Rigor <i>vs.</i> program change</h3><p>A randomized trial gives the strongest proof but needs a stable program and a control group that goes unserved. The AI-Native program changes every few months.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUESTIONS -->
+<section id="questions">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>07</b>Decisions</span>
+      <h2>Near-term decisions and the information they require</h2>
+    </div>
+    <ol class="decs">
+      <li><div><h3>Which upskilling payer first: a union fund, a public program or an employer?</h3></div></li>
+      <li><div><h3>Which credit mechanism with a college: prior learning, apprenticeship or both?</h3></div></li>
+      <li><div><h3>Should Pursuit develop an 8 to 14 week module for Workforce Pell?</h3></div></li>
+      <li><div><h3>What form of evaluation should Pursuit commission, and when?</h3></div></li>
+    </ol>
+    <div class="info"><div class="tablewrap"><table>
+      <thead><tr><th>Information required</th><th>Detail</th><th>Informs decision</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="3">Pursuit's own data</td></tr>
+        <tr><td><b>Seat-level economics</b></td><td>Cost per learner and per placement, by program</td><td><span class="chip">1</span><span class="chip">3</span></td></tr>
+        <tr><td><b>Placement detail</b></td><td>Placement, starting wage and retention by program, and employers that hire repeatedly</td><td><span class="chip">1</span><span class="chip">2</span></td></tr>
+        <tr><td><b>Learner profile</b></td><td>Share who are Pell-eligible, aged 25–55, or hold some college credit</td><td><span class="chip">2</span><span class="chip">3</span></td></tr>
+        <tr><td><b>Current curriculum</b></td><td>Which existing content could form a 150–599 hour program, and how it maps to college credit</td><td><span class="chip">2</span><span class="chip">3</span></td></tr>
+        <tr><td><b>Existing relationships</b></td><td>Unions, public agencies and employers already in contact with Pursuit</td><td><span class="chip">1</span><span class="chip">2</span></td></tr>
+        <tr class="grp"><td colspan="3">Partner and payer terms</td></tr>
+        <tr><td><b>Payer terms</b></td><td>Who controls each fund, what each pays per participant, and pricing from the Goldman Sachs pilot</td><td><span class="chip">1</span></td></tr>
+        <tr><td><b>College terms</b></td><td>How many credits CUNY could award and whether they count toward degree requirements, what Pursuit could earn under a contract, and how long approval takes</td><td><span class="chip">2</span><span class="chip">3</span></td></tr>
+        <tr><td><b>Evaluation scope</b></td><td>Which program version a study could measure, and when results could arrive</td><td><span class="chip">4</span></td></tr>
+      </tbody>
+    </table></div></div>
+  </div>
+</section>
+
+<!-- FIELD GUIDE -->
+<section id="guide" class="guide">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num"><b>08</b>Appendix</span>
+      <h2>Supporting material</h2>
+    </div>
+
+    <details open>
+      <summary>Partnership types, by how credit attaches</summary>
+      <div class="inner">
+        <div class="tablewrap"><table>
+          <thead><tr><th>Type</th><th>How credit attaches</th><th>Who teaches</th><th>Money to Pursuit</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td><b>Recognize</b></td><td>After the fact: a 1-to-1 agreement or credit for prior learning, or broad recognition through ACE</td><td>Pursuit</td><td>None from the college</td><td>CUNY SPS IT Pathways (up to 19 credits for Per Scholas, NPower and others); Year Up–Northeastern (18+); Merit America–Golden Gate University (12 elective)</td></tr>
+            <tr><td><b>Co-deliver</b></td><td>At the time, as a college course. Control ranges from Pursuit's course on the college's transcript, to shared delivery, to Pursuit coaching around college instruction</td><td>Shared, to varying degrees</td><td>Contract fee. Pursuit may deliver up to 25% of an aid-eligible program, or under 50% with accreditor approval</td><td>Per Scholas–Guttman CC; Outlier–Pitt and GGU; Duet and Rivet with SNHU; Project QUEST with Alamo Colleges</td></tr>
+            <tr><td><b>Earn-and-learn</b></td><td>The job counts toward a degree. Employer, college and sponsor share roles</td><td>College and employer</td><td>Sponsor or intermediary fees and grants. Employers pay wages</td><td>ApprenticeshipNC (up to 16 credit hours for work-based learning); Louisiana Delta CC teacher pipeline (54 apprentices); Reach University</td></tr>
+            <tr><td><b>Become</b></td><td>Pursuit's own credits and degrees</td><td>Pursuit</td><td>Federal aid directly, after candidacy for a nonprofit</td><td>Meritus (building); Campus, Outsmart, Frontier, Stepful (acquired)</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">Most partnerships are started by workforce organizations. The large ones scaled through state or system designs: Washington I-BEST, ApprenticeshipNC, New York's Reconnect.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Credit for prior learning and apprenticeship credit compared</summary>
+      <div class="inner">
+        <div class="tablewrap"><table>
+          <thead><tr><th>Dimension</th><th>Credit for prior learning</th><th>Registered apprenticeship with college credit</th></tr></thead>
+          <tbody>
+            <tr><td><b>What it is</b></td><td>A college awards credit for Pursuit's training after faculty review</td><td>A paid job with related instruction. Pursuit delivers the instruction and a college awards credit for it</td></tr>
+            <tr><td><b>Approvals</b></td><td>College faculty, under CUNY Policy 1.21</td><td>The Department of Labor registers the program, the State Education Department oversees related instruction, and the college approves credit</td></tr>
+            <tr><td><b>Employer role</b></td><td>None required</td><td>The employer hires the apprentice, pays wages and may claim the Empire State Apprenticeship Tax Credit</td></tr>
+            <tr><td><b>Money to Pursuit</b></td><td>None from the college</td><td>Sponsor and intermediary grants. SUNY Apprenticeship Program funds for related instruction are designated for community colleges and Educational Opportunity Centers, so Pursuit's share could be set by contract with the college</td></tr>
+            <tr><td><b>Limits</b></td><td>Colleges cap the credit a learner can earn through prior learning, so remaining degree requirements are completed at the college</td><td>Requires employers prepared to hire apprentices, and coordination among three parties</td></tr>
+            <tr><td><b>Pursuit's starting point</b></td><td>An existing relationship with LaGuardia</td><td>Registered sponsor status since 2023</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">The two mechanisms are complementary. Credit for prior learning needs only a college. An apprenticeship adds an employer, a wage and a state credential to that credit.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Funding sources for upskilling current workers</summary>
+      <div class="inner">
+        <div class="tablewrap"><table>
+          <thead><tr><th>Source</th><th>Who pays</th><th>How it works</th><th>Considerations</th></tr></thead>
+          <tbody>
+            <tr><td><b>Union training funds</b></td><td>Funds negotiated in collective bargaining</td><td>The fund pays tuition for members at an approved provider. The 1199SEIU funds pay members' tuition at CUNY</td><td>Effective when the fund pays for seats. Eastern Gateway illustrates the scrutiny that follows when Pell funds or revenue-sharing partners are involved</td></tr>
+            <tr><td><b>Incumbent worker training (WIOA)</b></td><td>Local workforce boards, with federal funds</td><td>Boards may use up to 20% of adult and dislocated worker funds, and employers pay a share of the cost</td><td>Terms vary by local board, and contracts usually run through the employer</td></tr>
+            <tr><td><b>State customized training grants</b></td><td>New York State</td><td>Grants to employers for training current staff</td><td>Availability depends on state budget priorities</td></tr>
+            <tr><td><b>Employer learning budgets</b></td><td>Employers</td><td>Direct contracts. Section 127 allows up to $5,250 per employee each year in tax-free educational assistance</td><td>AI vendors and consultancies offer training at low or no cost, which limits pricing</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">These sources pay at enrollment and do not depend on later placement. They serve people already in work, alongside the core program for adults seeking a first technology role.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Evidence: what drives earnings</summary>
+      <div class="inner">
+        <div class="tablewrap"><table>
+          <thead><tr><th>Program</th><th>Design</th><th>Earnings effect</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td><b>Year Up (core)</b></td><td>Organization teaches, then internship</td><td>+30% ($8,251) in year 7</td><td>Abt / OPRE RCT, 2022</td></tr>
+            <tr><td><b>Year Up PTC</b></td><td>On campus, college faculty teach, smaller stipends</td><td>No effect on earnings or enrollment</td><td>Abt RCT, 2022</td></tr>
+            <tr><td><b>Per Scholas</b></td><td>15-week sectoral IT training</td><td>+14% in year 7</td><td>MDRC WorkAdvance, 2022</td></tr>
+            <tr><td><b>Project QUEST</b></td><td>Organization picks programs, pays tuition, coaches</td><td>+18% ($5,240) in year 9</td><td>Economic Mobility Corp.</td></tr>
+            <tr><td><b>Washington I-BEST</b></td><td>College-led co-teaching</td><td>Higher credential completion, no long-term earnings gain</td><td>PACE RCT, ACF</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">A review of randomized evaluations by Katz, Roth, Hendra and Schaberg finds that sectoral programs raise earnings mainly by moving participants into higher-wage jobs in the targeted sector. Gains were largest at mature providers with established employer relationships.</p>
+    <p class="note">With a WorkRise grant, Pursuit and J-PAL-affiliated researchers designed a randomized trial of the earlier fellowship, as described in Pursuit's 2025 report.</p>
+    <p class="note">Read with care. The college-based Year Up changed several things at once, so the comparison can't isolate who teaches. The pattern still points one way: the gains travel with design, coaching and employer ties. Owning a college keeps those, unless accreditor rules on inputs such as faculty credentials push the model toward the college version.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Precedents, in more detail</summary>
+      <div class="inner">
+        <div class="tablewrap"><table>
+          <thead><tr><th>Organization</th><th>Path</th><th>What happened</th></tr></thead>
+          <tbody>
+            <tr><td><b>Campus</b></td><td>Acquired</td><td>For-profit WASC-accredited community college; one of very few for sale. Transfer via faculty credentials and guaranteed-admission agreements.</td></tr>
+            <tr><td><b>Outsmart</b></td><td>Acquired</td><td>Elmbridge, a small graduate school of education.</td></tr>
+            <tr><td><b>Frontier Institute of Technology</b></td><td>Acquired</td><td>Formerly Elmwood Institute, accredited by DEAC, a distance-only national accreditor. Now Jackson, Wyoming; online-first.</td></tr>
+            <tr><td><b>Stepful</b></td><td>Acquired</td><td>St. Louis College of Health Careers (ABHES), renamed Stepful College.</td></tr>
+            <tr><td><b>Meritus College</b></td><td>Building</td><td>Merit America's college. Utah-registered, not yet accredited, tuition-free for 2026–27, requires 30 accredited credits to enroll. Merit's earlier partners gave 12–18 credits.</td></tr>
+            <tr><td><b>Minerva</b></td><td>Incubated</td><td>Inside Keck Graduate Institute from 2014; independent WSCUC accreditation in 2021. Independence agreed up front.</td></tr>
+            <tr><td><b>Ivy Bridge</b></td><td>Incubated, failed</td><td>Inside Tiffin University. HLC ruled the spin-out plan a change of control and shut it down in 2013.</td></tr>
+            <tr><td><b>WGU, Calbright</b></td><td>Built</td><td>WGU took about six years with 19 governors behind it. Calbright took about four years from first enrollment, with state funding.</td></tr>
+            <tr><td><b>Reach University</b></td><td>Accredited first</td><td>Small WSCUC-accredited graduate school before launching apprenticeship degrees in 2020. Now 3,400+ working adults in nine states.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>New York and CUNY specifics</summary>
+      <div class="inner">
+        <ul class="checklist">
+          <li><b>CUNY credit for prior learning (Policy 1.21).</b> Faculty can approve credit for organization-specific training. Once recorded, the credit transfers across CUNY on the same basis as regular credit, and equivalencies post in CUNY's transfer database.</li>
+          <li><b>Reconnect.</b> Free tuition, fees and books in high-demand associate programs, including AI and technology, for New Yorkers aged 25–55. Degree holders qualify from January 2027. It pays after federal and state aid, and requires at least 6 credits per semester.</li>
+          <li><b>Workforce Pell in New York.</b> The state portal opened Aug 24, 2026. The institution must have operated in its current structure for 12 months, and a nonprofit can only deliver part of a program under contract with an eligible college.</li>
+          <li><b>State authorization.</b> No entity may confer degrees or use the words college or university in New York without a charter. Out-of-state colleges need accreditation before operating in person or online in New York.</li>
+        </ul>
+      </div>
+    </details>
+
+
+    <details>
+      <summary>Sources</summary>
+      <div class="inner">
+        <ol class="src">
+          <li><a href="https://www.federalregister.gov/documents/2026/05/19/2026-10013/accountability-in-higher-education-and-access-through-demand-driven-workforce-pell-pell-grant" target="_blank" rel="noopener">Workforce Pell final rule, Federal Register</a></li>
+          <li><a href="https://www.ed.gov/media/document/2026-negotiated-rulemaking-aim-data-presentation-113694.pdf" target="_blank" rel="noopener">ED accreditation rulemaking data presentation</a></li>
+          <li><a href="https://public-inspection.federalregister.gov/2026-12008.pdf" target="_blank" rel="noopener">PSC application for initial recognition</a></li>
+          <li><a href="https://www.msche.org/2026/10/30/advocacy-alert-usde-announces-final-higher-education-accreditation-rule/" target="_blank" rel="noopener">MSCHE on the final accreditation rule</a></li>
+          <li><a href="https://www.americanprogress.org/?p=453079" target="_blank" rel="noopener">Center for American Progress on ACICS</a></li>
+          <li><a href="https://gao.gov/products/GAO-17-574" target="_blank" rel="noopener">Government Accountability Office report GAO-17-574 on credit transfer</a></li>
+          <li><a href="https://www.aaas.org/sites/default/files/2026-10/Bharat%20Chandar%20Slides.pdf" target="_blank" rel="noopener">Chandar, Stanford "Canaries" update, Oct 2026</a></li>
+          <li><a href="https://www.edtechinnovationhub.com/news/workforce-training-platform-stepful-announces-acquisition-of-45-year-old-us-based-nursing-school" target="_blank" rel="noopener">Stepful acquisition</a></li>
+          <li><a href="https://frontiertech.edu/about-us/" target="_blank" rel="noopener">Frontier Institute of Technology history</a></li>
+          <li><a href="https://www.merituscollege.org/faqs" target="_blank" rel="noopener">Meritus College FAQ</a></li>
+          <li><a href="https://www.arnoldventures.org/stories/two-randomized-controlled-trials-of-year-ups-professional-training-corps-ptc-a-college-based-version-of-year-ups-proven-effective-workforce-training-program-for-economically-disadvantaged-young-adults" target="_blank" rel="noopener">Year Up PTC RCT summary</a></li>
+          <li><a href="https://www.arnoldventures.org/stories/11-year-follow-up-of-the-randomized-controlled-trial-rct-of-project-quest-a-workforce-development-program-for-low-income-adults" target="_blank" rel="noopener">Project QUEST 11-year follow-up</a></li>
+          <li><a href="https://www.nga.org/publications/building-degree-apprenticeships-in-north-carolina-a-state-led-approach-to-expanding-earn-and-learn-pathways/" target="_blank" rel="noopener">NGA on North Carolina degree apprenticeships</a></li>
+          <li><a href="https://policy.cuny.edu/wp-content/uploads/sites/6/page-assets/general-policy/Policy-1.21-Credit-for-Prior-Learning.pdf" target="_blank" rel="noopener">CUNY Policy 1.21</a></li>
+          <li><a href="https://www.governor.ny.gov/news/governor-hochul-expands-free-community-college-access-tens-thousands-more-adult-learners" target="_blank" rel="noopener">Reconnect expansion</a></li>
+          <li><a href="https://www.ny.gov/workforcepell" target="_blank" rel="noopener">New York Workforce Pell</a></li>
+          <li><a href="https://www.law.cornell.edu/cfr/text/34/668.5" target="_blank" rel="noopener">34 CFR 668.5, contracted delivery limits</a></li>
+          <li><a href="https://www.nysed.gov/college-university-evaluation/permission-operate-nys" target="_blank" rel="noopener">NYSED on out-of-state institutions</a></li>
+          <li><a href="https://www.pursuit.org/blog/randomized-controlled-trial-report-2025" target="_blank" rel="noopener">Pursuit, lessons from designing a randomized trial, 2025</a></li>
+          <li><a href="https://workrisenetwork.org/projects/randomized-controlled-trial-pursuit-fellowship" target="_blank" rel="noopener">WorkRise project page, Pursuit Fellowship trial</a></li>
+          <li><a href="https://scholar.harvard.edu/files/lkatz/files/krhs_sectoral_jole_final.pdf" target="_blank" rel="noopener">Katz, Roth, Hendra and Schaberg on sectoral employment programs</a></li>
+          <li><a href="https://system.suny.edu/wfd/college-apprenticeships/" target="_blank" rel="noopener">SUNY Apprenticeship Program</a></li>
+          <li>Workforce Innovation and Opportunity Act, section 134(d)(4), incumbent worker training</li>
+          <li>Internal Revenue Code, section 127, educational assistance programs</li>
+        </ol>
+      </div>
+    </details>
+  </div>
+</section>
+</main>
+<footer><div class="wrap">Draft for discussion. Figures about Pursuit come from Pursuit materials. Other figures are cited in the appendix.</div></footer>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var fmt=function(n){var a=Math.abs(n);var s=a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?Math.round(a/1e3)+'K':String(Math.round(a));return (n<0?'−$':'$')+s};
+
+  /* ---------- needs ---------- */
+  var NEEDS=[
+    {id:'aid',name:'Federal aid',sub:'Pell and Workforce Pell as revenue',
+     need:'An accredited, aid-eligible institution of record. Pursuit can be that institution, or contract with one.',
+     only:'Yes, for direct aid. Partners can carry aid, but the money lands at the college, and Pursuit\'s delivery share is capped at 25%, or under 50% with accreditor approval.',
+     read:'Requires scale to maximize benefit, in addition to new programs for Workforce Pell eligibility. See the calculator in section 04.',
+     v:['good','Delivered by accreditation, with scale']},
+    {id:'degree',name:'Degree signal',sub:'Recognizable credential for future jobs',
+     need:'A degree from a name employers and graduate schools trust, available to graduates once they leave Pursuit\'s employer network.',
+     only:'No. A CUNY degree already carries a name that employers and universities trust. A degree in Pursuit\'s name could take time to earn the same recognition.',
+     read:'In the near term, Pursuit\'s own brand and employer relationships are sufficient. A CUNY partnership or apprenticeship can close the gap otherwise. Over the long term, Pursuit could build a brand stronger than CUNY\'s, alongside broader ecosystem efforts to prove student outcomes, such as the PSC accreditation effort (application pending).',
+     v:['warn','Covered by partnerships']},
+    {id:'transfer',name:'Transfer',sub:'Credits that keep counting',
+     need:'Receiving schools agree to accept Pursuit-earned credit toward real requirements, not only electives.',
+     only:'No. Each receiving school decides what credit it accepts, so accreditation helps without guaranteeing transfer. Credit-for-prior-learning policies and articulation agreements, such as CUNY\'s, work with or without Pursuit\'s own accreditation.',
+     read:'Transfer mainly benefits learners and is secondary to Pursuit\'s core goal of placement. A credit equivalency with CUNY is a low-cost way to add value for graduates.',
+     v:['warn','Covered by partnerships']},
+    {id:'resilience',name:'Revenue resilience',sub:'Less dependence on any one funder',
+     need:'Revenue that grows with outcomes and does not need renewing each grant cycle.',
+     only:'No. Employer fees, union training funds and public workforce programs also pay for training. Federal aid adds formula money but is still government money.',
+     read:'Employers, union training funds and public incumbent worker programs already pay for training. A priced upskilling program for those payers may diversify revenue faster than aid.',
+     v:['good','Delivered by accreditation, alongside other options']}
+  ];
+  var need='aid';
+  function renderNeeds(){
+    $('#needTabs').innerHTML=NEEDS.map(function(n){return '<button type="button" data-need="'+n.id+'" aria-pressed="'+(n.id===need)+'"><b>'+n.name+'</b><span>'+n.sub+'</span></button>'}).join('');
+    var n=NEEDS.filter(function(x){return x.id===need})[0];
+    $('#needPanel').innerHTML='<div><span class="eyebrow">What has to be true</span><p>'+n.need+'</p></div><div><span class="eyebrow">Is accreditation the only way?</span><p>'+n.only+'</p></div><div><span class="eyebrow">Considerations for Pursuit</span><p>'+n.read+'</p></div><div class="verdict"><span class="pill '+n.v[0]+'">'+n.v[1]+'</span></div>';
+    Array.prototype.forEach.call(document.querySelectorAll('#needTabs button'),function(b){b.onclick=function(){need=b.dataset.need;renderNeeds();renderRoutes()}});
+  }
+
+  /* ---------- calculator ---------- */
+  var ids=['learners','eligible','award','cost'];
+  function calc(){
+    var L=+$('#learners').value,E=+$('#eligible').value/100,A=+$('#award').value,C=+$('#cost').value;
+    $('#o-learners').textContent=L.toLocaleString();
+    $('#o-eligible').textContent=Math.round(E*100)+'%';
+    $('#o-award').textContent='$'+A.toLocaleString();
+    $('#o-cost').textContent=fmt(C);
+    var G=L*E*A,N=G-C,max=Math.max(G,C,10e6);
+    $('#net').textContent=fmt(N);
+    $('#net').className='big tnum '+(N<0?'neg':'pos');
+    $('#b-gross').style.width=(G/max*100)+'%';$('#v-gross').textContent=fmt(G);
+    $('#b-cost').style.width=(C/max*100)+'%';$('#v-cost').textContent=fmt(C);
+    $('#b-ref').style.width=(10e6/max*100)+'%';
+  }
+  ids.forEach(function(i){$('#'+i).addEventListener('input',calc)});
+
+  /* ---------- routes ---------- */
+  var Z={ind:{name:'Independent',c:'var(--z-ind)',cls:'z-ind'},par:{name:'Partner',c:'var(--z-par)',cls:'z-par'},nw:{name:'New college',c:'var(--z-new)',cls:'z-new'}};
+  var R=[
+    {id:'r1',z:'ind',n:'Licensed provider with employer and upskilling revenue',m:'Licensed, upskilling revenue',lp:'l',s:'Current model, with employer, union and public payers',x:92,y:8,cost:1,
+     arch:'Pursuit today; General Assembly',
+     sc:{aid:['bad','No federal aid'],degree:['bad','Degree filters at years 3–5'],transfer:['warn','Credit recs; uneven acceptance'],fid:['good','Full control']},
+     tri:null,
+     must:['Employers will pay for placements or apprenticeships.','Union funds, public programs or employers will pay for seats in upskilling programs.','Public and philanthropic funding holds while employer revenue grows.'],
+     ev:['Employer-paid models held up better than learner-paid models when entry-level hiring fell.','Bootcamps that relied on learner payments stalled when entry-level hiring fell.'],
+     ctr:'The lowest cost and fastest option, with full control over curriculum and employer partners. Graduates may hit a ceiling later in their careers where employers require a degree, and revenue depends on employers and funders continuing to pay.'},
+    {id:'r2',z:'par',n:'Contract delivery',lp:'l',s:'CUNY awards the credit',x:38,y:34,cost:2,
+     arch:'Per Scholas–Guttman CC; Outlier–Pitt and GGU; Duet–SNHU',
+     sc:{aid:['warn','Aid goes to CUNY; Pursuit earns a capped fee'],degree:['good','CUNY brand'],transfer:['good','Portable across CUNY'],fid:['bad','College rules shape delivery']},
+     tri:null,
+     must:['CUNY accepts a contract share large enough to matter.','Middle States approves any share above 25%.'],
+     ev:['Federal rules cap an outside provider at 25% of an aid-eligible program, or under 50% with accreditor approval.','Pitt\'s faculty senate criticized the Outlier arrangement because Pitt faculty did not teach or assess the courses.'],
+     ctr:'Costs vary with volume, and setup takes a moderate amount of time. Federal rules cap how much Pursuit can deliver, and the college sets standards for faculty and curriculum, so Pursuit depends on one college system and gives up some control over delivery.'},
+    {id:'r3',z:'par',n:'Degree apprenticeship',s:'Paid job, college credit and a state credential',x:58,y:40,cost:2,
+     arch:'ApprenticeshipNC; Louisiana Delta CC; Reach University',
+     sc:{aid:['warn','Pell or Reconnect pays CUNY tuition'],degree:['good','CUNY associate degree'],transfer:['good','Portable across CUNY'],fid:['good','Pursuit keeps design and employers']},
+     tri:null,
+     must:['LaGuardia will award credit for the AI-Native curriculum and on-the-job learning.','Employers will hire apprentices at wage.'],
+     ev:['North Carolina community colleges can award up to 16 credit hours for work-based learning in apprenticeship degrees.','Reconnect makes the CUNY associate degree free for most learners aged 25–55 from January 2027.','SUNY Apprenticeship Program funds for related instruction are designated for community colleges and Educational Opportunity Centers, so Pursuit\'s share could be set by contract with the college.'],
+     ctr:'Low cost to Pursuit, since employers pay apprentice wages and grants support intermediaries. Setup takes longer because it needs a registered apprenticeship, a college partner willing to award credit, and employers willing to hire apprentices.'},
+    {id:'r4',z:'par',n:'Incubate, then spin out',s:'Hosted by a college, then independent',x:42,y:58,cost:3,
+     arch:'Minerva at KGI (worked); Ivy Bridge at Tiffin (shut down)',
+     sc:{aid:['warn','Through host, then own'],degree:['warn','Host\'s degree first'],transfer:['good','Rides host\'s accreditation'],fid:['warn','Host approves major changes']},
+     tri:{sc:{aid:['warn','Few local hosts could agree']}},
+     must:['A host agrees in writing, up front, to Pursuit\'s eventual independence.','The accreditor approves the arrangement before students enroll.'],
+     ev:['Minerva disclosed its independence plan from the start and became independent in 2021.','Ivy Bridge\'s accreditor treated the spin-out as a change of control and shut it down in 2013.'],
+     ctr:'Pursuit pays a host fee now and carries build costs later. The host holds most of the leverage until independence, and the accreditor may need to approve the arrangement before students enroll.'},
+    {id:'r5',z:'nw',n:'Build for a new accreditor (e.g., PSC)',m:'Build, new accreditor',lp:'t',s:'Outcomes-based accreditor',x:86,y:72,cost:4,
+     arch:'No precedent yet',
+     sc:{aid:['warn','Only after PSC recognition'],degree:['warn','Limited credibility until brand is built'],transfer:['bad','New accreditor; low trust'],fid:['good','Full design control']},
+     tri:{sc:{aid:['warn','Also needs a New York charter']}},
+     must:['PSC is recognized, and its recognition covers candidacy.','New York charters a PSC-accredited college.'],
+     ev:['PSC\'s June 2026 notice lists accreditation of institutions, without mentioning preaccreditation.','ACICS lost recognition in 2016, regained it in 2018, and lost it again in 2022. Its schools had 18 months to find a new accreditor.'],
+     ctr:'High fixed costs over several years, and dependence on one new accreditor whose federal recognition is still pending. Pursuit could keep full design control, but transfer and degree recognition could take time to build.'},
+    {id:'r6',z:'nw',n:'Build for an established accreditor',m:'Build, established accreditor',lp:'r',s:'Middle States or a national accreditor',x:54,y:92,cost:5,
+     arch:'WGU; Calbright',
+     sc:{aid:['good','Durable once earned'],degree:['warn','Trusted accreditor, new name'],transfer:['good','Strongest default'],fid:['warn','Input rules bend the model']},
+     tri:null,
+     must:['The model survives input standards such as faculty credentials.','Pursuit can fund 5–10 years before aid flows.'],
+     ev:['Every precedent had unusual backing: governors, state funding, or a large endowment.','Year Up\'s partner colleges required instructors with master\'s degrees.'],
+     ctr:'The highest fixed cost and the slowest option, with accreditor rules on inputs such as faculty credentials shaping the model. The result is the most durable and the most widely accepted for transfer.'},
+    {id:'r7',z:'nw',n:'Acquire an existing college',m:'Acquire existing college',lp:'b',s:'Acquisition of a small accredited school',x:26,y:88,cost:4,
+     arch:'Campus; Outsmart; Frontier; Stepful',
+     sc:{aid:['good','After change-of-control review'],degree:['warn','Inherited brand'],transfer:['warn','Inherited accreditor'],fid:['bad','New programs need approval']},
+     tri:{sc:{aid:['good','Northeast closures add supply']}},
+     must:['A viable school is for sale in New York or New Jersey.','Its accreditor fits an in-person, fast-changing model.'],
+     ev:['Stepful acquired St. Louis College of Health Careers and renamed it Stepful College.','Frontier inherited DEAC, a distance-only accreditor, from Elmwood Institute.'],
+     ctr:'A lower upfront cost than building, with inherited liabilities and an inherited accreditor. Each new program still needs approval, and the accreditor may not fit an in-person, fast-changing model.'}
+  ];
+  var D={
+    r1:'Pursuit keeps running its programs on its own, without its own accreditation, and earns revenue from employers, union training funds and public workforce programs alongside grants. Upskilling for current workers is the main new source.',
+    r2:'A college enrolls the learners and awards the credit, while Pursuit delivers part of the instruction and coaching under a contract and earns a fee.',
+    r3:'Learners hold a paid apprenticeship with an employer and earn college credit toward an associate degree. Pursuit or the college delivers the related instruction, the college awards the credit, and Pursuit keeps program design and employer relationships.',
+    r4:'Pursuit launches its degree inside an existing accredited college, which holds the accreditation at first, with written terms for Pursuit to become independent later.',
+    r5:'Pursuit founds its own college and seeks accreditation from a newer accreditor focused on student outcomes, which is still working toward federal recognition.',
+    r6:'Pursuit founds its own college and seeks accreditation from an established regional or national accreditor, such as Middle States.',
+    r7:'Pursuit acquires a small accredited college and builds its programs inside it, inheriting the college\'s state license and its accreditor.'
+  };
+  var serves={aid:['r5','r6','r7','r4'],degree:['r3','r2','r6','r7'],transfer:['r3','r2','r6','r4'],resilience:['r1','r3','r6','r7']};
+  var tri=true,sel='r3'; /* in-person tri-state delivery is fixed */
+  function view(r){
+    var o={x:r.x,y:r.y,sc:{}};for(var k in r.sc)o.sc[k]=r.sc[k];
+    if(tri&&r.tri){if(r.tri.x!=null)o.x=r.tri.x;if(r.tri.y!=null)o.y=r.tri.y;for(var j in r.tri.sc)o.sc[j]=r.tri.sc[j]}
+    return o;
+  }
+  var X0=70,X1=600,Y0=380,Y1=24;
+  function px(x){return X0+(X1-X0)*x/100} function py(y){return Y0-(Y0-Y1)*y/100}
+  function renderMap(){
+    var s='';
+    s+='<rect x="'+X0+'" y="'+Y1+'" width="'+(X1-X0)+'" height="'+(Y0-Y1)+'" fill="var(--paper)" rx="4"/>';
+    [25,50,75].forEach(function(v){s+='<line x1="'+px(v)+'" y1="'+Y1+'" x2="'+px(v)+'" y2="'+Y0+'" stroke="var(--line)" stroke-dasharray="2 4"/><line x1="'+X0+'" y1="'+py(v)+'" x2="'+X1+'" y2="'+py(v)+'" stroke="var(--line)" stroke-dasharray="2 4"/>'});
+    s+='<text x="'+((X0+X1)/2)+'" y="414" text-anchor="middle" font-family="Roboto Mono,monospace" font-size="11" fill="var(--muted)">CONTROL OVER PURSUIT\'S MODEL →</text>';
+    s+='<text transform="translate(22 '+((Y0+Y1)/2)+') rotate(-90)" text-anchor="middle" font-family="Roboto Mono,monospace" font-size="11" fill="var(--muted)">FEDERAL AID DIRECT TO PURSUIT →</text>';
+    s+='<text x="'+X0+'" y="398" font-family="Roboto Mono,monospace" font-size="10" fill="var(--muted)">low</text><text x="'+X1+'" y="398" text-anchor="end" font-family="Roboto Mono,monospace" font-size="10" fill="var(--muted)">high</text>';
+    s+='<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink)"/></marker></defs>';
+    var seq=['r1','r3','r5'].map(function(id){return R.filter(function(x){return x.id===id})[0]});
+    for(var q=0;q<seq.length-1;q++){
+      var a=seq[q],b=seq[q+1],ax=px(a.x),ay=py(a.y),bx=px(b.x),by=py(b.y),dx=bx-ax,dy=by-ay,len=Math.sqrt(dx*dx+dy*dy),ra=6+a.cost*4.5+5,rb=6+b.cost*4.5+6;
+      s+='<line x1="'+(ax+dx/len*ra)+'" y1="'+(ay+dy/len*ra)+'" x2="'+(bx-dx/len*rb)+'" y2="'+(by-dy/len*rb)+'" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#arr)"/>';
+    }
+    R.forEach(function(r,i){
+      var v=view(r),rad=6+r.cost*4.5,on=r.id===sel;
+      var lx=px(v.x),ly=py(v.y),lp=r.lp||'r',tx=lx,ty=ly+4,anchor='middle';if(lp==='r'){tx=lx+rad+6;anchor='start'}else if(lp==='l'){tx=lx-rad-6;anchor='end'}else if(lp==='t'){ty=ly-rad-8}else{ty=ly+rad+15}
+      s+='<g class="stn" tabindex="0" role="button" aria-label="'+r.n+'" data-id="'+r.id+'">';
+      s+='<circle class="ring" cx="'+lx+'" cy="'+ly+'" r="'+rad+'" fill="'+(on?Z[r.z].c:'var(--surface)')+'" stroke="'+Z[r.z].c+'" stroke-width="'+(on?3:3)+'"/>';
+      s+='<text x="'+lx+'" y="'+(ly+4)+'" text-anchor="middle" font-weight="600" style="fill:'+(on?'var(--surface)':'var(--ink)')+'">'+(i+1)+'</text>';
+      s+='<text x="'+tx+'" y="'+ty+'" text-anchor="'+anchor+'">'+(r.m||r.n)+'</text>';
+      s+='</g>';
+    });
+    $('#map').innerHTML=s;
+    Array.prototype.forEach.call(document.querySelectorAll('.stn'),function(g){
+      g.onclick=function(){sel=g.dataset.id;renderRoutes()};
+      g.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();sel=g.dataset.id;renderRoutes()}};
+    });
+  }
+  function renderDetail(){
+    var r=R.filter(function(x){return x.id===sel})[0],v=view(r),z=Z[r.z];
+    var labels={aid:'Federal aid',degree:'Degree',transfer:'Transfer',fid:'Model fidelity'};
+    var sc=Object.keys(labels).map(function(k){return '<div class="score '+v.sc[k][0]+'"><b>'+labels[k]+'</b><span>'+v.sc[k][1]+'</span></div>'}).join('');
+    $('#detail').className='detail '+z.cls;
+    $('#detail').innerHTML='<span class="zone-tag">'+z.name+'</span><h3>'+r.n+'</h3><div class="scores">'+sc+'</div>'+
+      '<dl class="kv"><dt>What it is</dt><dd>'+D[r.id]+'</dd><dt>Archetypes</dt><dd>'+r.arch+'</dd><dt>Profile</dt><dd>'+r.ctr+'</dd><dt>Must be true</dt><dd>'+r.must.join('<br>')+'</dd></dl>'+
+      '<details class="drawer" open><summary>Evidence</summary><ul>'+r.ev.map(function(e){return '<li>'+e+'</li>'}).join('')+'</ul></details>';
+  }
+  function renderList(){
+    var cols={ind:[],par:[],nw:[]};R.forEach(function(r,i){cols[r.z].push('<button type="button" class="rbtn" data-id="'+r.id+'" aria-pressed="'+(r.id===sel)+'"><b>'+(i+1)+'. '+r.n+'</b><span>'+r.s+'</span></button>')});
+    $('#routeList').innerHTML=['ind','par','nw'].map(function(k){return '<div class="zone-col '+Z[k].cls+'"><h4><span class="zone-tag">'+Z[k].name+'</span></h4>'+cols[k].join('')+'</div>'}).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('.rbtn'),function(b){b.onclick=function(){sel=b.dataset.id;renderRoutes()}});
+  }
+  function renderRoutes(){renderMap();renderDetail();renderList()}
+
+  /* ---------- nav highlight ---------- */
+  var links=Array.prototype.slice.call(document.querySelectorAll('#stops a'));
+  function onScroll(){var y=window.scrollY+120,cur=links[0];links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t&&t.offsetTop<=y)cur=a});links.forEach(function(a){a.classList.toggle('on',a===cur)})}
+  window.addEventListener('scroll',onScroll,{passive:true});
+
+  renderNeeds();calc();renderRoutes();onScroll();
+})();
+</script>
+
+</body></html>
